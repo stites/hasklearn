@@ -1,0 +1,64 @@
+-- This file has been generated from package.yaml by hpack version 0.17.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           hasklearn
+version:        0.0.1.0
+synopsis:       Initial project template
+description:    Please see README.md
+category:       Machine Learning
+homepage:       https://github.com/stites/hasklearn#readme
+bug-reports:    https://github.com/stites/hasklearn/issues
+author:         Sam Stites
+maintainer:     sam@stites.io
+copyright:      2017 Sam Stites
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+source-repository head
+  type: git
+  location: https://github.com/stites/hasklearn
+
+library
+  hs-source-dirs:
+      src
+  default-extensions: BangPatterns LambdaCase OverloadedStrings ViewPatterns
+  ghc-options: -optl-fuse-ld=lld -threaded -rtsopts -with-rtsopts=-N -Wall
+  ld-options: -fuse-ld=lld
+  build-depends:
+      base
+  default-language: Haskell2010
+
+test-suite doctest
+  type: exitcode-stdio-1.0
+  main-is: DocTest.hs
+  hs-source-dirs:
+      test
+  default-extensions: BangPatterns LambdaCase OverloadedStrings ViewPatterns
+  ghc-options: -optl-fuse-ld=lld -threaded -rtsopts -with-rtsopts=-N -Wall
+  ld-options: -fuse-ld=lld
+  build-depends:
+      base
+    , hasklearn
+    , doctest
+  other-modules:
+      Spec
+  default-language: Haskell2010
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  default-extensions: BangPatterns LambdaCase OverloadedStrings ViewPatterns
+  ghc-options: -optl-fuse-ld=lld -threaded -rtsopts -with-rtsopts=-N -Wall
+  ld-options: -fuse-ld=lld
+  build-depends:
+      base
+    , hasklearn
+    , hspec
+  other-modules:
+      DocTest
+  default-language: Haskell2010

@@ -1,0 +1,40 @@
+name:        hasklearn
+version:     0.0.1.0
+synopsis:    Initial project template
+description: Please see README.md
+category:    Machine Learning
+author:      Sam Stites
+maintainer:  sam@stites.io
+github:      stites/hasklearn
+license:     BSD3
+copyright:   2017 Sam Stites
+
+ghc-options: -optl-fuse-ld=lld -threaded -rtsopts -with-rtsopts=-N -Wall
+ld-options:  -fuse-ld=lld
+
+default-extensions:
+  - BangPatterns
+  - LambdaCase
+  - OverloadedStrings
+  - ViewPatterns
+
+dependencies:
+  - base
+
+library:
+  source-dirs: src
+
+tests:
+  doctest:
+    main: DocTest.hs
+    source-dirs: test
+    dependencies:
+      - hasklearn
+      - doctest
+
+  spec:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+      - hasklearn
+      - hspec
