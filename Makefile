@@ -20,6 +20,9 @@ ghci:
 ghcid:
 	ghcid --height=$(GHCID_SIZE) --topmost "--command=$(GHCI)"
 
+ghcid-test:
+	ghcid --height=$(GHCID_SIZE) --topmost "--command=$(GHCI) --test"
+
 hlint:
 	if command -v sos > /dev/null; then sos -p 'app/.*\.hs' -p 'src/.*\.hs' \
 	-c 'hlint \0'; else $(MAKE) sos_warn; fi

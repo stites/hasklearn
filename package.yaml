@@ -9,32 +9,53 @@ github:      stites/hasklearn
 license:     BSD3
 copyright:   2017 Sam Stites
 
-ghc-options: -optl-fuse-ld=lld -threaded -rtsopts -with-rtsopts=-N -Wall
-ld-options:  -fuse-ld=lld
+# FIXME: check to see if you can get clang and lld working
+# ld-options:  -fuse-ld=lld
+# ghc-options: "\"-pgmP clang\" \"-pgmc clang\" \"-pgma clang\" \"-pgml clang\"
+#              -optl-fuse-ld=lld
+#              -threaded
+#              -rtsopts
+#              -with-rtsopts=-N
+#              -Wall"
+#ld-options:  -fuse-ld=gold
+#ghc-options: -optl-fuse-ld=gold
+#             -threaded
+#             -rtsopts
+#             -with-rtsopts=-N
+#             -Wall
+#
 
 default-extensions:
   - BangPatterns
   - LambdaCase
   - OverloadedStrings
   - ViewPatterns
+  - NoImplicitPrelude
+  - UndecidableInstances
+  - MultiParamTypeClasses
+  - FunctionalDependencies
 
 dependencies:
   - base
+  - numhask
+  - hmatrix
+  - statistics
 
 library:
   source-dirs: src
 
 tests:
-  doctest:
-    main: DocTest.hs
-    source-dirs: test
-    dependencies:
-      - hasklearn
-      - doctest
+#  doctest:
+#    main: DocTest.hs
+#    source-dirs: test
+#    dependencies:
+#      - hasklearn
+#      - doctest
 
   spec:
     main: Spec.hs
     source-dirs: test
     dependencies:
+      - QuickCheck
       - hasklearn
       - hspec
