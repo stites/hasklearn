@@ -40,6 +40,11 @@ dependencies:
   - numhask
   - hmatrix
   - statistics
+  # datasets
+  - cassava
+  - bytestring
+  - safe-exceptions
+  - vector
 
 library:
   source-dirs: src
