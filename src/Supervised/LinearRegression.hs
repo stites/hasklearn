@@ -27,6 +27,8 @@ import Prelude
 import qualified Data.Monoid as M
 import Numeric.LinearAlgebra
 import qualified Numeric.LinearAlgebra.Data as LD
+import Debug.Trace
+
 
 
 type Labels  = Vector Double
@@ -35,8 +37,18 @@ type Inputs  = Matrix Double
 type Model   = (Weights, Inputs -> Labels)
 
 
-fit :: Inputs -> Labels -> Model
-fit i l = weightedFit w i l
+data LinearRegression = LinearRegression
+  { nIters       :: Integer  -- ^ The number of iterations the algorithm will train weights for.
+  , learningRate :: Double   -- ^ Step length for updating weights
+  }
+
+
+mkLinearRegression :: LinearRegression
+mkLinearRegression = LinearRegression 100 0.001
+
+
+fit :: LinearRegression -> Inputs -> Labels -> Model
+fit cfg i l = weightedFit cfg w i l
   where
     nfs :: Int
     nfs = cols i
@@ -45,8 +57,8 @@ fit i l = weightedFit w i l
     w =  (vector $ replicate nfs 1) / (konst (fromIntegral nfs) nfs)
 
 
-weightedFit :: Weights -> Inputs -> Labels -> Model
-weightedFit _ _xs y = (w, \i -> snocBias i #> w)
+weightedFit :: LinearRegression -> Weights -> Inputs -> Labels -> Model
+weightedFit cfg _ _xs y = (w, \i -> snocBias i #> w)
   where
     xs :: Matrix Double
     xs = snocBias _xs
@@ -70,7 +82,7 @@ consBias m = LD.fromColumns $ ones (snd $ size m) : LD.toColumns m
 
 
 snocBias :: Matrix Double -> Matrix Double
-snocBias m = LD.fromColumns $ LD.toColumns m M.<> [ones (snd $ size m)]
+snocBias m = m ||| konst 1 (fst (size m), 1)
 
 
 ones :: Int -> Vector Double
@@ -88,7 +100,7 @@ scoreR2Regressor (_, fn) truth i = rSquare truth (fn i)
 
 -- | Compute R^2, the coefficient of determination that
 -- indicates goodness-of-fit of a regression.
-rSquare :: Labels -> Labels -> Double
+rSquare :: (truth ~ Labels) => truth -> Labels -> Double
 rSquare truth pred = 1 - numerator / denominator
   where
     weight :: Vector Double
@@ -113,15 +125,5 @@ sumColumns = vector . fmap sumElements . toColumns
 
 coefficients :: Model -> Weights
 coefficients = fst
-
-
-data Config = Config
-  { nIters       :: Integer  -- ^ The number of iterations the algorithm will train weights for.
-  , learningRate :: Double   -- ^ Step length for updating weights
-  }
-
-
-defaultConfigs :: Config
-defaultConfigs = Config 100 0.001
 
 

@@ -65,12 +65,16 @@ module Datasets.Iris where
 
 import Prelude hiding (readFile)
 import Data.Csv
+import Control.Arrow
 import GHC.Generics
-import Data.ByteString.Lazy
+import Data.ByteString.Lazy (readFile)
 import Control.Monad.IO.Class
 import Control.Exception.Safe
-import Data.Vector (Vector, toList)
+
+import Data.Vector (Vector, toList, fromList)
+import qualified Data.Vector as V
 import Numeric.LinearAlgebra (Matrix, fromLists)
+import Numeric.LinearAlgebra.Data ((??), Extractor(..))
 
 data Datum = Datum
   { sepalLength :: Double
@@ -113,5 +117,26 @@ loadIrisRaw = do
   return xs
 
 
-loadIris :: (MonadThrow m, MonadIO m) => m (Matrix Double)
-loadIris = fromLists . toList . fmap toDoubles <$> loadIrisRaw
+loadIris :: (MonadThrow m, MonadIO m) => m (Matrix Double, Vector IrisClass)
+loadIris = featureLabelSplit <$> loadIrisRaw
+  where
+    featureLabelSplit :: Vector Datum -> (Matrix Double, Vector IrisClass)
+    featureLabelSplit v = foo $ fmap ((init . toDoubles) &&& irisClass) v
+
+    foo :: Vector ([Double], IrisClass) -> (Matrix Double, Vector IrisClass)
+    foo vs = (fromLists $ toList (fmap fst vs), fmap snd vs)
+
+
+type Dataset = (Matrix Double, Vector IrisClass)
+
+
+splitCV :: Float -> Dataset -> (Dataset, Dataset)
+splitCV percent (features, labels) =
+  ( (features ?? (Take splitpoint, All), V.take splitpoint labels)
+  , (features ?? (Drop splitpoint, All), V.drop splitpoint labels)
+  )
+
+  where
+    splitpoint :: Int
+    splitpoint = truncate (fromIntegral (length labels) * percent) :: Int
+
