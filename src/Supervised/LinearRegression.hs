@@ -43,8 +43,9 @@ data LinearRegression = LinearRegression
   }
 
 
-mkLinearRegression :: LinearRegression
-mkLinearRegression = LinearRegression 100 0.001
+-- "scikit-learn style" naming
+mkModel :: LinearRegression
+mkModel = LinearRegression 100 0.001
 
 
 fit :: LinearRegression -> Inputs -> Labels -> Model

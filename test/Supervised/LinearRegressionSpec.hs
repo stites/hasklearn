@@ -19,7 +19,7 @@ main = do
 
   let
     trainedModel :: Model
-    trainedModel = fit mkLinearRegression trainX trainY
+    trainedModel = fit mkModel trainX trainY
 
   let
     predicted :: Labels
